@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Language Showcase: The Grammar of Guessing</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3 { font-family: 'Playfair Display', serif; }
+        .loader { width: 24px; height: 24px; border: 3px solid #f3f3f3; border-top: 3px solid #10b981; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto; }
+        .small-loader { width: 16px; height: 16px; border: 2px solid #f3f3f3; border-top: 2px solid #10b981; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .draggable { cursor: grab; }
+        .draggable.dragging { opacity: 0.5; }
+        .drop-zone { border: 2px dashed #ccc; min-height: 80px; transition: background-color 0.2s, border-color 0.2s; }
+        .drop-zone.over { background-color: #e0f2fe; border-color: #38bdf8; }
+        .feedback-btn { transition: background-color 0.2s; }
+        .feedback-btn:disabled { background-color: #9ca3af; cursor: not-allowed; }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto p-4 sm:p-8 max-w-4xl">
+        <header class="text-center mb-10">
+            <h1 class="text-4xl md:text-5xl font-black text-gray-900">The Grammar of Guessing</h1>
+            <p class="mt-3 text-lg text-gray-600">A guide to speculating about the past, present, and future using modal verbs.</p>
+        </header>
+
+        <div class="bg-white p-8 rounded-2xl shadow-xl">
+            <h2 class="text-3xl font-bold text-gray-900 text-center">The Certainty Scale</h2>
+            <p class="mt-2 text-center text-gray-600 mb-8">We use different modal verbs to show how certain we are about something. Think of it like a scale from almost 100% sure to just a possibility.</p>
+            
+            <div class="space-y-6">
+                <div>
+                    <div class="flex justify-between items-center mb-1">
+                        <span class="font-bold text-lg text-emerald-600">Certain (95-100%)</span>
+                        <span class="text-sm font-semibold text-gray-500">PAST / PRESENT</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-8">
+                        <div class="bg-emerald-500 h-8 rounded-full" style="width: 95%"></div>
+                    </div>
+                    <p class="mt-2 text-gray-700">Use <strong>must</strong> for positive certainty and <strong>can't</strong> for negative certainty.</p>
+                    <div class="mt-2 p-3 bg-emerald-50 rounded-lg text-sm">
+                        <p>Past: "The people at the event <strong>must have been</strong> very upset." (I'm sure they were.)</p>
+                        <p>Past: "They <strong>can't have had</strong> much imagination." (I'm sure they didn't.)</p>
+                        <p>Present: "It <strong>must be</strong> exciting to find a time capsule." (I'm sure it is.)</p>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex justify-between items-center mb-1">
+                        <span class="font-bold text-lg text-amber-600">Possible (30-70%)</span>
+                        <span class="text-sm font-semibold text-gray-500">PAST / PRESENT / FUTURE</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-8">
+                        <div class="bg-amber-500 h-8 rounded-full" style="width: 50%"></div>
+                    </div>
+                    <p class="mt-2 text-gray-700">Use <strong>might</strong>, <strong>may</strong>, or <strong>could</strong> when you are uncertain.</p>
+                    <div class="mt-2 p-3 bg-amber-50 rounded-lg text-sm">
+                        <p>Past: "Archaeologists <strong>might have been</strong> hoping to find something historical." (It's possible.)</p>
+                        <p>Present: "That <strong>may seem</strong> like a long time to wait." (It's possible.)</p>
+                        <p>Future: "People <strong>could interpret</strong> them in many ways." (It's a future possibility.)</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Grammar Drills Section -->
+            <div id="grammar-drills" class="mt-12 pt-8 border-t-2 border-gray-200">
+                <h2 class="text-3xl font-bold text-gray-900 text-center">Grammar Drills: Build Your Skills</h2>
+                <p class="mt-2 text-center text-gray-600 mb-8">Practice the grammar with these exercises before you move on to the creative activities.</p>
+                
+                <!-- Drill 1: Certainty Scale -->
+                <div class="mb-10">
+                    <h3 class="text-2xl font-bold mb-4 text-emerald-700">Drill 1: The Certainty Scale</h3>
+                    <p class="mb-4">Read the sentences below. Drag and drop them into the correct box based on their level of certainty.</p>
+                    <div id="draggable-sentences" class="mb-4 flex flex-wrap gap-2 p-2 bg-gray-50 rounded-lg">
+                        <div class="draggable bg-gray-200 p-2 rounded-md" draggable="true" data-certainty="certain">She <strong>must have gotten</strong> stuck in traffic.</div>
+                        <div class="draggable bg-gray-200 p-2 rounded-md" draggable="true" data-certainty="possible">She <strong>might have forgotten</strong> about the lesson.</div>
+                        <div class="draggable bg-gray-200 p-2 rounded-md" draggable="true" data-certainty="certain">She <strong>can't have quit</strong> her job.</div>
+                        <div class="draggable bg-gray-200 p-2 rounded-md" draggable="true" data-certainty="possible">She <strong>could be</strong> in a meeting.</div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <h4 class="font-bold text-center mb-2">Certain (must / can't)</h4>
+                            <div id="certain-zone" class="drop-zone p-4 bg-gray-50 rounded-lg"></div>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-center mb-2">Possible (might / may / could)</h4>
+                            <div id="possible-zone" class="drop-zone p-4 bg-gray-50 rounded-lg"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Drill 2: Sentence Transformation -->
+                <div class="mb-10">
+                    <h3 class="text-2xl font-bold mb-4 text-amber-700">Drill 2: Sentence Transformation</h3>
+                    <p class="mb-4">Read the fact and the clue. Rewrite the situation as a speculation in the box below.</p>
+                    <div class="space-y-4">
+                        <div>
+                            <p><strong>Fact:</strong> The window is broken. <strong>Clue:</strong> A baseball is on the floor.</p>
+                            <input type="text" class="w-full p-2 border border-gray-300 rounded-md mt-1" placeholder="Your sentence: Someone must have...">
+                        </div>
+                        <div>
+                            <p><strong>Fact:</strong> Maria is not at her desk. <strong>Clue:</strong> Her coat is still on her chair.</p>
+                            <input type="text" class="w-full p-2 border border-gray-300 rounded-md mt-1" placeholder="Your sentence: She can't have...">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Drill 3: What's the Story? -->
+                <div id="story-drills" class="space-y-12">
+                    <h3 class="text-2xl font-bold mb-4 text-sky-700">Drill 3: "What's the Story?"</h3>
+                    
+                    <div class="p-4 bg-gray-50 rounded-lg story-card" data-image-desc="an abandoned house">
+                        <p class="mb-4">Look at the image of the abandoned house. Complete the sentences below with your own ideas.</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                            <img src="https://abandonedsoutheast.com/wp-content/uploads/2020/01/50051316203_96a70e5f15_k.jpg" onerror="this.onerror=null;this.src='https://placehold.co/600x400/e2e8f0/475569?text=Abandoned+House';" alt="An old, abandoned house" class="rounded-lg shadow-md w-full h-auto object-cover">
+                            <div class="space-y-3">
+                                <div class="sentence-group">
+                                    <div class="flex items-center gap-2">
+                                        <input type="text" class="flex-grow p-1 border-b bg-transparent" placeholder="Use 'must have been'..." data-modal-phrase="must have been">
+                                        <button class="feedback-btn text-xs bg-sky-600 text-white px-2 py-1 rounded hover:bg-sky-700">Feedback</button>
+                                    </div>
+                                    <div class="feedback-display text-xs text-gray-600 mt-1 h-4"></div>
+                                </div>
+                                <div class="sentence-group">
+                                    <div class="flex items-center gap-2">
+                                        <input type="text" class="flex-grow p-1 border-b bg-transparent" placeholder="Use 'can't have lived'..." data-modal-phrase="can't have lived">
+                                        <button class="feedback-btn text-xs bg-sky-600 text-white px-2 py-1 rounded hover:bg-sky-700">Feedback</button>
+                                    </div>
+                                    <div class="feedback-display text-xs text-gray-600 mt-1 h-4"></div>
+                                </div>
+                                <div class="sentence-group">
+                                    <div class="flex items-center gap-2">
+                                        <input type="text" class="flex-grow p-1 border-b bg-transparent" placeholder="Use 'might have left'..." data-modal-phrase="might have left">
+                                        <button class="feedback-btn text-xs bg-sky-600 text-white px-2 py-1 rounded hover:bg-sky-700">Feedback</button>
+                                    </div>
+                                    <div class="feedback-display text-xs text-gray-600 mt-1 h-4"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-4 bg-gray-50 rounded-lg story-card" data-image-desc="an old treasure chest">
+                        <p class="mb-4">Look at the image of the old treasure chest. Complete the sentences below with your own ideas.</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                             <img src="https://www.shutterstock.com/image-photo/treasure-chest-ancient-wooden-locked-260nw-621481175.jpg" onerror="this.onerror=null;this.src='https://placehold.co/600x400/e2e8f0/475569?text=Treasure+Chest';" alt="An old treasure chest" class="rounded-lg shadow-md w-full h-auto object-cover">
+                            <div class="space-y-3">
+                                <div class="sentence-group">
+                                    <div class="flex items-center gap-2">
+                                        <input type="text" class="flex-grow p-1 border-b bg-transparent" placeholder="Use 'must have'..." data-modal-phrase="must have">
+                                        <button class="feedback-btn text-xs bg-sky-600 text-white px-2 py-1 rounded hover:bg-sky-700">Feedback</button>
+                                    </div>
+                                    <div class="feedback-display text-xs text-gray-600 mt-1 h-4"></div>
+                                </div>
+                                <div class="sentence-group">
+                                    <div class="flex items-center gap-2">
+                                        <input type="text" class="flex-grow p-1 border-b bg-transparent" placeholder="Use 'might be'..." data-modal-phrase="might be">
+                                        <button class="feedback-btn text-xs bg-sky-600 text-white px-2 py-1 rounded hover:bg-sky-700">Feedback</button>
+                                    </div>
+                                    <div class="feedback-display text-xs text-gray-600 mt-1 h-4"></div>
+                                </div>
+                                <div class="sentence-group">
+                                    <div class="flex items-center gap-2">
+                                        <input type="text" class="flex-grow p-1 border-b bg-transparent" placeholder="Use 'could be'..." data-modal-phrase="could be">
+                                        <button class="feedback-btn text-xs bg-sky-600 text-white px-2 py-1 rounded hover:bg-sky-700">Feedback</button>
+                                    </div>
+                                    <div class="feedback-display text-xs text-gray-600 mt-1 h-4"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="p-4 bg-gray-50 rounded-lg story-card" data-image-desc="friends around a campfire">
+                        <p class="mb-4">Look at the image of the friends around the campfire. Complete the sentences below with your own ideas.</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                            <img src="https://thumbs.dreamstime.com/b/group-friends-sitting-around-camp-fire-preparing-sausages-happy-time-old-125313627.jpg" onerror="this.onerror=null;this.src='https://placehold.co/600x400/e2e8f0/475569?text=Campfire';" alt="Friends around a campfire" class="rounded-lg shadow-md w-full h-auto object-cover">
+                            <div class="space-y-3">
+                                <div class="sentence-group">
+                                    <div class="flex items-center gap-2">
+                                        <input type="text" class="flex-grow p-1 border-b bg-transparent" placeholder="Use 'must be'..." data-modal-phrase="must be">
+                                        <button class="feedback-btn text-xs bg-sky-600 text-white px-2 py-1 rounded hover:bg-sky-700">Feedback</button>
+                                    </div>
+                                    <div class="feedback-display text-xs text-gray-600 mt-1 h-4"></div>
+                                </div>
+                                <div class="sentence-group">
+                                    <div class="flex items-center gap-2">
+                                        <input type="text" class="flex-grow p-1 border-b bg-transparent" placeholder="Use 'might have been'..." data-modal-phrase="might have been">
+                                        <button class="feedback-btn text-xs bg-sky-600 text-white px-2 py-1 rounded hover:bg-sky-700">Feedback</button>
+                                    </div>
+                                    <div class="feedback-display text-xs text-gray-600 mt-1 h-4"></div>
+                                </div>
+                                <div class="sentence-group">
+                                    <div class="flex items-center gap-2">
+                                        <input type="text" class="flex-grow p-1 border-b bg-transparent" placeholder="Use 'can\'t be'..." data-modal-phrase="can't be">
+                                        <button class="feedback-btn text-xs bg-sky-600 text-white px-2 py-1 rounded hover:bg-sky-700">Feedback</button>
+                                    </div>
+                                    <div class="feedback-display text-xs text-gray-600 mt-1 h-4"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-4 bg-gray-50 rounded-lg story-card" data-image-desc="a person looking at a map in a city">
+                        <p class="mb-4">Look at the image of the person looking at a map. Complete the sentences below with your own ideas.</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                            <img src="https://media.gettyimages.com/id/600990082/photo/solo-traveler-in-tower-bridge-area-reading-a-map.jpg?s=612x612&w=gi&k=20&c=AZLykNhyHLohS4_IQZELNMxswljH7Q4OQywZLGv2bnI=" onerror="this.onerror=null;this.src='https://placehold.co/600x400/e2e8f0/475569?text=Tourist+with+Map';" alt="A person looking at a map in a city" class="rounded-lg shadow-md w-full h-auto object-cover">
+                            <div class="space-y-3">
+                                <div class="sentence-group">
+                                    <div class="flex items-center gap-2">
+                                        <input type="text" class="flex-grow p-1 border-b bg-transparent" placeholder="Use 'must be'..." data-modal-phrase="must be">
+                                        <button class="feedback-btn text-xs bg-sky-600 text-white px-2 py-1 rounded hover:bg-sky-700">Feedback</button>
+                                    </div>
+                                    <div class="feedback-display text-xs text-gray-600 mt-1 h-4"></div>
+                                </div>
+                                <div class="sentence-group">
+                                    <div class="flex items-center gap-2">
+                                        <input type="text" class="flex-grow p-1 border-b bg-transparent" placeholder="Use 'could have'..." data-modal-phrase="could have">
+                                        <button class="feedback-btn text-xs bg-sky-600 text-white px-2 py-1 rounded hover:bg-sky-700">Feedback</button>
+                                    </div>
+                                    <div class="feedback-display text-xs text-gray-600 mt-1 h-4"></div>
+                                </div>
+                                <div class="sentence-group">
+                                    <div class="flex items-center gap-2">
+                                        <input type="text" class="flex-grow p-1 border-b bg-transparent" placeholder="Use 'may ask'..." data-modal-phrase="may ask">
+                                        <button class="feedback-btn text-xs bg-sky-600 text-white px-2 py-1 rounded hover:bg-sky-700">Feedback</button>
+                                    </div>
+                                    <div class="feedback-display text-xs text-gray-600 mt-1 h-4"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="mt-12">
+                <h2 class="text-3xl font-bold text-gray-900 text-center">✨ Artifact Analyzer</h2>
+                <p class="mt-2 text-center text-gray-600 mb-6">You are an archaeologist. An unknown artifact has just been discovered! Click the button to get your artifact, then write three sentences speculating about its past and present.</p>
+                <div class="text-center mb-6">
+                    <button id="get-artifact-btn" class="bg-emerald-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-emerald-700 transition-colors">Get a Mystery Artifact</button>
+                </div>
+                <div id="artifact-box" class="text-center" style="display: none;">
+                    <div id="artifact-loader" class="loader mb-4" style="display: none;"></div>
+                    <img id="artifact-image" class="max-w-xs mx-auto rounded-lg shadow-lg" src="" alt="Mystery Artifact">
+                    <p id="artifact-desc" class="mt-4 font-semibold text-lg"></p>
+                    <textarea id="user-speculation" class="w-full mt-4 p-4 border border-gray-300 rounded-lg h-32" placeholder="Write three sentences. Use must have, can't have, and might be..."></textarea>
+                    <button id="check-speculation-btn" class="mt-4 w-full bg-gray-800 text-white font-semibold py-3 px-6 rounded-lg hover:bg-gray-900 transition-colors">Get AI Feedback</button>
+                    <div id="feedback-container" class="mt-4 bg-gray-50 p-4 rounded-lg text-left" style="display: none;">
+                        <div id="feedback-loader" class="loader" style="display: none;"></div>
+                        <p id="feedback-content" class="text-gray-700 whitespace-pre-wrap"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- ARTIFACT ANALYZER LOGIC ---
+            const artifacts = [
+                { name: "an ancient Roman coin", imageUrl: "https://images.pexels.com/photos/844433/pexels-photo-844433.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
+                { name: "a mysterious, old key", imageUrl: "https://images.pexels.com/photos/134033/pexels-photo-134033.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
+                { name: "a fragment of decorated pottery", imageUrl: "https://images.pexels.com/photos/1484508/pexels-photo-1484508.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
+                { name: "a pair of old, worn spectacles", imageUrl: "https://images.pexels.com/photos/39716/pexels-photo-39716.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" }
+            ];
+            let currentArtifact = null;
+
+            const getArtifactBtn = document.getElementById('get-artifact-btn');
+            const artifactBox = document.getElementById('artifact-box');
+            const artifactImage = document.getElementById('artifact-image');
+            const artifactDesc = document.getElementById('artifact-desc');
+            const userSpeculation = document.getElementById('user-speculation');
+            const checkSpeculationBtn = document.getElementById('check-speculation-btn');
+            const feedbackContainer = document.getElementById('feedback-container');
+            const feedbackLoader = document.getElementById('feedback-loader');
+            const feedbackContent = document.getElementById('feedback-content');
+
+            async function callGeminiWithExponentialBackoff(prompt, maxRetries = 5) {
+                let delay = 1000;
+                for (let i = 0; i < maxRetries; i++) {
+                    try {
+                        const apiKey = ""; // The environment will inject the API key
+                        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+                        const payload = { contents: [{ role: "user", parts: [{ text: prompt }] }] };
+                        const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                        if (!response.ok) {
+                            if (response.status === 429 || response.status >= 500) { throw new Error(`API call failed with status: ${response.status}`); }
+                            const errorResult = await response.json();
+                            return `Error: ${errorResult.error?.message || 'An unknown error occurred.'}`;
+                        }
+                        const result = await response.json();
+                        if (result.candidates && result.candidates[0]?.content?.parts?.[0]?.text) {
+                            return result.candidates[0].content.parts[0].text;
+                        }
+                        return "Sorry, the model's response was empty.";
+                    } catch (error) {
+                        if (i === maxRetries - 1) {
+                            console.error("Gemini API call error after max retries:", error);
+                            return "Sorry, an error occurred. Please try again later.";
+                        }
+                        await new Promise(res => setTimeout(res, delay));
+                        delay *= 2;
+                    }
+                }
+            }
+
+            getArtifactBtn.addEventListener('click', () => {
+                artifactBox.style.display = 'block';
+                feedbackContainer.style.display = 'none';
+                userSpeculation.value = '';
+                currentArtifact = artifacts[Math.floor(Math.random() * artifacts.length)];
+                artifactImage.src = currentArtifact.imageUrl;
+                artifactImage.onerror = function() {
+                    this.onerror=null;
+                    this.src=`https://placehold.co/400x300/e2e8f0/475569?text=Artifact+Image`;
+                };
+                artifactDesc.textContent = `You've discovered ${currentArtifact.name}!`;
+            });
+
+            checkSpeculationBtn.addEventListener('click', async () => {
+                const speculation = userSpeculation.value;
+                if (speculation.trim().length < 10) {
+                    feedbackContainer.style.display = 'block';
+                    feedbackContent.textContent = "Please write at least one full sentence before getting feedback.";
+                    return;
+                }
+
+                feedbackContainer.style.display = 'block';
+                feedbackLoader.style.display = 'block';
+                feedbackContent.textContent = '';
+                checkSpeculationBtn.disabled = true;
+                checkSpeculationBtn.classList.add('opacity-50', 'cursor-not-allowed');
+
+                const prompt = `You are a friendly and encouraging archaeology professor. A student is practicing speculating about an artifact (${currentArtifact.name}) and wrote the following: "${speculation}". 
+                Please provide feedback in two short, bulleted points:
+                * **Grammar Check:** [Comment on how well they used modal verbs of speculation like 'must have', 'can't have', 'might be', etc. Praise correct usage or gently correct any mistakes.]
+                * **Archaeologist's Insight:** [Add an interesting, creative idea to their speculation, as if you were a real archaeologist. For example, 'That's a great observation! An archaeologist might also notice...']`;
+
+                const response = await callGeminiWithExponentialBackoff(prompt);
+                
+                feedbackLoader.style.display = 'none';
+                feedbackContent.textContent = response;
+                
+                checkSpeculationBtn.disabled = false;
+                checkSpeculationBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+            });
+            
+            // --- DRAG AND DROP LOGIC (DRILL 1) ---
+            const draggables = document.querySelectorAll('.draggable');
+            const dropZones = document.querySelectorAll('.drop-zone');
+            
+            draggables.forEach((draggable, index) => {
+                draggable.id = `draggable-${index}`;
+                draggable.addEventListener('dragstart', (e) => {
+                    e.dataTransfer.setData('text/plain', e.target.id);
+                    setTimeout(() => { e.target.classList.add('dragging'); }, 0);
+                });
+                draggable.addEventListener('dragend', (e) => {
+                    e.target.classList.remove('dragging');
+                });
+            });
+
+            dropZones.forEach(zone => {
+                zone.addEventListener('dragover', e => {
+                    e.preventDefault();
+                    zone.classList.add('over');
+                });
+                zone.addEventListener('dragleave', () => { zone.classList.remove('over'); });
+                zone.addEventListener('drop', e => {
+                    e.preventDefault();
+                    zone.classList.remove('over');
+                    const id = e.dataTransfer.getData('text/plain');
+                    const draggable = document.getElementById(id);
+                    
+                    if (draggable) {
+                        const targetCertainty = zone.id.includes('certain') ? 'certain' : 'possible';
+                        if (draggable.dataset.certainty === targetCertainty) {
+                            zone.appendChild(draggable);
+                            draggable.style.backgroundColor = '#d1fae5';
+                            draggable.style.borderColor = '#10b981';
+                        } else {
+                            draggable.style.backgroundColor = '#fee2e2';
+                            setTimeout(() => {
+                               draggable.style.backgroundColor = '';
+                               document.getElementById('draggable-sentences').appendChild(draggable);
+                            }, 500);
+                        }
+                    }
+                });
+            });
+
+            // --- STRICT FEEDBACK LOGIC (DRILL 3) ---
+            const storyDrills = document.getElementById('story-drills');
+            storyDrills.addEventListener('click', async function(e) {
+                if (!e.target.classList.contains('feedback-btn')) return;
+
+                const button = e.target;
+                const sentenceGroup = button.closest('.sentence-group');
+                const input = sentenceGroup.querySelector('input');
+                const feedbackDisplay = sentenceGroup.querySelector('.feedback-display');
+                const storyCard = button.closest('.story-card');
+                
+                const sentence = input.value.trim();
+                const imageDesc = storyCard.dataset.imageDesc;
+                const modalPhrase = input.dataset.modalPhrase;
+
+                if (sentence.length === 0) {
+                    feedbackDisplay.textContent = "Please write a sentence first.";
+                    feedbackDisplay.style.color = '#ef4444'; // red
+                    return;
+                }
+
+                button.disabled = true;
+                feedbackDisplay.innerHTML = `<div class="loader small-loader animate-spin"></div>`;
+
+                const prompt = `You are a strict English grammar teacher. A student is speculating about an image of ${imageDesc}. The student was asked to use the modal verb phrase '${modalPhrase}'.
+
+The student wrote: "${sentence}".
+
+Your task is to evaluate the sentence based on two strict criteria:
+1.  **Grammatical Correctness:** Does the sentence correctly use the phrase '${modalPhrase}' for speculation? The grammar must be perfect.
+2.  **Relevance:** Is the speculation directly and logically related to the image of ${imageDesc}?
+
+If both criteria are met, respond with a single word: "Correct."
+If the grammar is wrong OR the sentence is irrelevant to the image, provide a very short, direct correction. For example: "Incorrect. Use 'must have been', not 'must be'." or "Incorrect. This is not relevant to the image." Do not be encouraging or friendly. Be direct and strict.`;
+
+                const response = await callGeminiWithExponentialBackoff(prompt);
+
+                feedbackDisplay.textContent = response;
+                if (response.toLowerCase().includes('correct')) {
+                    feedbackDisplay.style.color = '#10b981'; // green
+                } else {
+                    feedbackDisplay.style.color = '#ef4444'; // red
+                }
+                button.disabled = false;
+            });
+        });
+    </script>
+</body>
+</html>
