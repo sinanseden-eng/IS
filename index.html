@@ -3,678 +3,328 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Unit 1: How is music a part of our lives?</title>
+    <title>The Art of Asking Politely: An Infographic Guide</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Chosen Palette: Calm Harmony -->
-    <!-- Application Structure Plan: The application is structured into four thematic, non-linear sections navigated by a sticky header: 'Music & Us' (for initial engagement with quizzes and facts), 'Music Trends' (for data visualization and grammar), 'Sound & Focus' (for practical life skills application), and 'Lesson Planner' (a direct reference tool for teachers). This thematic structure was chosen over a linear lesson-by-lesson format to encourage user-driven exploration and cater to different learning goals. A student might focus on the interactive quiz and trends, while a teacher might use the planner and soundscape recommender for class preparation. This design prioritizes usability and engagement by grouping related concepts and interactions together. -->
-    <!-- Visualization & Content Choices: 
-        1.  Quiz (Music & Us): Report Info (Quiz from PDF p.2) -> Goal (Inform/Engage) -> Viz/Presentation (Interactive HTML form) -> Interaction (User selection, instant feedback on submit) -> Justification (Active recall is more effective than passive reading) -> Library/Method (Vanilla JS).
-        2.  Reading Insights (Music & Us): Report Info (Article from PDF p.4) -> Goal (Inform) -> Viz/Presentation (Clickable tabs revealing text snippets) -> Interaction (User clicks a topic to read a summary) -> Justification (Breaks down a long text into digestible, user-controlled chunks) -> Library/Method (HTML/JS).
-        3.  Trend Charts (Music Trends): Report Info (Charts from PDF p.6) -> Goal (Compare/Analyze Change) -> Viz/Presentation (Line charts in a canvas) -> Interaction (Buttons select a dataset, updating the chart and a descriptive text block; a toggle switches grammar) -> Justification (Dynamically connects data visualization with the target language patterns, reinforcing learning) -> Library/Method (Chart.js, Vanilla JS).
-        4.  Soundscape Recommender (Sound & Focus): Report Info (Life Skills from PDF p.7-8) -> Goal (Organize/Apply) -> Viz/Presentation (Dropdown menu with an output text area) -> Interaction (User selects an activity to get a tailored recommendation and explanation) -> Justification (Turns an abstract concept into a practical, personalized tool) -> Library/Method (Vanilla JS).
-        5.  Lesson Planner (Lesson Planner): Report Info (All 9 lesson plans) -> Goal (Organize/Inform) -> Viz/Presentation (HTML accordion) -> Interaction (Click to expand/collapse each lesson plan) -> Justification (Provides a clear, organized, and space-efficient way for teachers to access the source material) -> Library/Method (HTML/JS).
-    -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #F8F7F4;
-            color: #333333;
+            background-color: #E0F7FA; 
+            scroll-behavior: smooth;
         }
         .nav-link {
-            transition: all 0.3s;
-            border-bottom: 2px solid transparent;
+            transition: color 0.3s, border-color 0.3s;
         }
-        .nav-link.active, .nav-link:hover {
-            color: #4A919E;
-            border-bottom-color: #4A919E;
+        .nav-link.active {
+            color: #00ACC1;
+            border-bottom-color: #00ACC1;
         }
-        .btn {
-            transition: all 0.3s;
-            border-radius: 0.5rem;
-            padding: 0.5rem 1rem;
-            font-weight: 500;
+        .loader {
+            width: 24px;
+            height: 24px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #00ACC1;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
         }
-        .btn-primary {
-            background-color: #4A919E;
-            color: white;
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
-        .btn-primary:hover {
-            background-color: #3B747E;
-        }
-        .btn-secondary {
-            background-color: #E0E0E0;
-            color: #333333;
-        }
-        .btn-secondary:hover {
-            background-color: #C7C7C7;
-        }
-        .btn-secondary.active {
-            background-color: #4A919E;
-            color: white;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        .card {
-            background-color: white;
-            border-radius: 0.75rem;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.1);
-            padding: 1.5rem;
-        }
-        .accordion-content {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.5s ease-in-out;
-        }
-        .chart-container {
+        .video-container {
             position: relative;
             width: 100%;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-            height: 300px;
-            max-height: 40vh;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            height: 0;
         }
-        @media (min-width: 768px) {
-            .chart-container {
-                height: 350px;
-            }
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        .tense-btn.active {
+            background-color: #006064;
+            color: white;
         }
     </style>
 </head>
-<body class="antialiased">
-
-    <header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
-        <nav class="container mx-auto px-4">
-            <div class="flex justify-between items-center py-3">
-                <h1 class="text-xl md:text-2xl font-bold text-[#4A919E]">Music in Our Lives</h1>
-                <div class="hidden md:flex space-x-6">
-                    <a href="#music-and-us" class="nav-link text-gray-600 pb-1">Music & Us</a>
-                    <a href="#music-trends" class="nav-link text-gray-600 pb-1">Music Trends</a>
-                    <a href="#sound-and-focus" class="nav-link text-gray-600 pb-1">Sound & Focus</a>
-                    <a href="#lesson-planner" class="nav-link text-gray-600 pb-1">Lesson Planner</a>
-                </div>
-                 <div class="md:hidden">
-                    <select id="mobile-nav" class="bg-gray-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[#4A919E] focus:border-[#4A919E] block w-full p-2.5">
-                        <option value="#music-and-us">Music & Us</option>
-                        <option value="#music-trends">Music Trends</option>
-                        <option value="#sound-and-focus">Sound & Focus</option>
-                        <option value="#lesson-planner">Lesson Planner</option>
-                    </select>
-                </div>
+<body class="text-gray-800">
+    <!-- 
+    Chosen Color Palette: Brilliant Blues
+    Lightest Blue (BG): #E0F7FA
+    Light Blue: #B2EBF2
+    Medium Blue: #4DD0E1
+    Teal: #00ACC1
+    Dark Teal: #00838F
+    Darkest Teal (Text): #006064
+    -->
+    <nav class="sticky top-0 bg-white/80 backdrop-blur-md shadow-md z-50">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-center items-center h-16 space-x-3 md:space-x-6">
+                <a href="#why" class="nav-link text-gray-600 hover:text-[#00ACC1] font-bold border-b-2 border-transparent pb-1 text-sm md:text-base">Why?</a>
+                <a href="#how" class="nav-link text-gray-600 hover:text-[#00ACC1] font-bold border-b-2 border-transparent pb-1 text-sm md:text-base">Formula</a>
+                <a href="#rules" class="nav-link text-gray-600 hover:text-[#00ACC1] font-bold border-b-2 border-transparent pb-1 text-sm md:text-base">Rules</a>
+                <a href="#tenses" class="nav-link text-gray-600 hover:text-[#00ACC1] font-bold border-b-2 border-transparent pb-1 text-sm md:text-base">Tenses</a>
+                <a href="#watch" class="nav-link text-gray-600 hover:text-[#00ACC1] font-bold border-b-2 border-transparent pb-1 text-sm md:text-base">Watch</a>
+                <a href="#practice" class="nav-link text-gray-600 hover:text-[#00ACC1] font-bold border-b-2 border-transparent pb-1 text-sm md:text-base">Practice</a>
             </div>
-        </nav>
-    </header>
+        </div>
+    </nav>
 
-    <main class="container mx-auto px-4 py-8 md:py-12">
-        <section id="hero" class="text-center mb-16">
-            <h2 class="text-4xl md:text-6xl font-extrabold mb-4 tracking-tight">How is <span class="text-[#4A919E]">music</span> a part of our lives?</h2>
-            <p class="text-lg text-gray-600 max-w-3xl mx-auto">This interactive unit explores the profound impact of music on our daily lives, from its influence on our emotions and society to the technology that shapes how we listen. Explore the sections below to learn more.</p>
-        </section>
+    <div class="container mx-auto p-4 md:p-8">
 
-        <section id="music-and-us" class="mb-16 scroll-mt-20">
-            <h3 class="text-3xl font-bold mb-2 text-center">Music & Us</h3>
-            <p class="text-md text-gray-600 max-w-2xl mx-auto text-center mb-8">How much do you know about music's influence? This section lets you test your knowledge with a short quiz and explore key ideas about how music has shaped human society throughout history.</p>
+        <header class="text-center my-12">
+            <h1 class="text-4xl md:text-6xl font-black" style="color: #006064;">The Art of Asking Politely</h1>
+            <h2 class="text-2xl md:text-3xl font-bold mt-4" style="color: #00838F;">Unit 4: Language In Use</h2>
+            <p class="mt-4 text-lg max-w-3xl mx-auto" style="color: #00838F;">A visual guide to mastering indirect questions for smoother conversations.</p>
+        </header>
 
-            <div class="grid md:grid-cols-2 gap-8">
-                <div class="card">
-                    <h4 class="text-2xl font-semibold mb-4 text-center">The Music in Our Lives Quiz</h4>
-                    <form id="music-quiz">
-                        <div id="quiz-questions" class="space-y-6"></div>
-                        <div class="text-center mt-6">
-                            <button type="submit" class="btn btn-primary">Check Answers</button>
+        <main class="space-y-20">
+
+            <section id="why">
+                <h2 class="text-3xl font-bold text-center mb-10" style="color: #006064;">When Should You Use an Indirect Question?</h2>
+                <div class="bg-white rounded-lg shadow-md p-8">
+                    <p class="text-center mb-8">Indirect questions soften your language, making you sound more respectful and less demanding. They are your best tool in specific social situations.</p>
+                    <div class="flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-4">
+                        <div class="p-4 bg-[#E0F7FA] rounded-lg text-center font-bold" style="color: #00838F;">Are you talking to a friend?</div>
+                        <div class="text-2xl font-bold" style="color: #00ACC1;">→</div>
+                        <div class="p-4 bg-[#B2EBF2] rounded-lg text-center">
+                            <span class="font-bold" style="color: #00838F;">YES</span><br>
+                            <span class="text-sm">Direct Question is OK!</span>
                         </div>
-                    </form>
-                </div>
-
-                <div class="card">
-                    <h4 class="text-2xl font-semibold mb-4 text-center">Where Words Fail, Music Speaks</h4>
-                    <p class="text-sm text-gray-500 mb-4 text-center">The Voyager 1 space probe carried a "Golden Record" to show other intelligent life what humanity is like. Music was a huge part of it. Click the topics below to see why music is considered a universal language.</p>
-                    <div id="reading-tabs" class="flex flex-wrap justify-center gap-2 mb-4"></div>
-                    <div id="reading-content" class="p-4 bg-gray-50 rounded-lg min-h-[150px]"></div>
-                </div>
-            </div>
-        </section>
-
-        <section id="music-trends" class="mb-16 scroll-mt-20">
-            <h3 class="text-3xl font-bold mb-2 text-center">Music Trends</h3>
-            <p class="text-md text-gray-600 max-w-2xl mx-auto text-center mb-8">The way we listen to music has changed dramatically with technology. This section visualizes key trends in music consumption. Click on a trend to see its data and learn how to describe it using different grammatical structures.</p>
-            
-            <div class="card">
-                <div class="text-center mb-4">
-                    <div id="trend-buttons" class="flex flex-wrap justify-center gap-2"></div>
-                </div>
-                <div class="chart-container mb-4">
-                    <canvas id="trends-chart"></canvas>
-                </div>
-                <div class="bg-gray-50 p-4 rounded-lg text-center">
-                    <p id="trend-description" class="text-lg font-medium text-gray-700 min-h-[2.5em]"></p>
-                    <div class="mt-4 flex items-center justify-center">
-                        <label for="phrase-toggle" class="text-sm font-medium text-gray-900 mr-3">Alternative Phrasing</label>
-                        <button id="phrase-toggle" type="button" class="bg-gray-200 relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-[#4A919E] focus:ring-offset-2" role="switch" aria-checked="false">
-                            <span class="sr-only">Use alternative phrasing</span>
-                            <span id="toggle-knob" class="translate-x-0 pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"></span>
-                        </button>
+                        <div class="text-2xl font-bold" style="color: #00ACC1;">→</div>
+                         <div class="p-4 bg-[#B2EBF2] rounded-lg text-center">
+                            <span class="font-bold" style="color: #00838F;">NO</span><br>
+                             <span class="text-sm">Consider an Indirect Question if...</span>
+                        </div>
+                    </div>
+                    <div class="flex justify-center my-4">
+                        <div class="text-2xl font-bold" style="color: #00ACC1;">↓</div>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
+                        <div class="p-4 bg-white border-2 border-dashed rounded-lg" style="border-color: #4DD0E1;">
+                            <h3 class="font-bold" style="color: #006064;">It's a Formal Situation</h3>
+                            <p class="text-sm"> (Teacher, Boss)</p>
+                        </div>
+                        <div class="p-4 bg-white border-2 border-dashed rounded-lg" style="border-color: #4DD0E1;">
+                            <h3 class="font-bold" style="color: #006064;">You're Talking to a Stranger</h3>
+                             <p class="text-sm">(Asking for directions)</p>
+                        </div>
+                        <div class="p-4 bg-white border-2 border-dashed rounded-lg" style="border-color: #4DD0E1;">
+                            <h3 class="font-bold" style="color: #006064;">You're Making a Request</h3>
+                             <p class="text-sm">(Asking for a favor)</p>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </section>
-        
-        <section id="sound-and-focus" class="mb-16 scroll-mt-20">
-            <h3 class="text-3xl font-bold mb-2 text-center">Sound & Focus</h3>
-            <p class="text-md text-gray-600 max-w-2xl mx-auto text-center mb-8">The sounds around us, or "soundscapes," can help us focus, make us relax, or cause stress. This section provides an interactive tool to explore how different soundscapes can be tailored to specific activities to improve productivity and well-being.</p>
-            
-            <div class="card">
-                <h4 class="text-2xl font-semibold mb-4 text-center">Soundscape Recommender</h4>
-                <div class="max-w-md mx-auto">
-                   <label for="activity-select" class="block mb-2 text-sm font-medium text-gray-900">Select an activity to get a soundscape recommendation:</label>
-                    <select id="activity-select" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[#4A919E] focus:border-[#4A919E] block w-full p-2.5">
-                    </select>
+            </section>
+
+            <section id="how">
+                <h2 class="text-3xl font-bold text-center mb-10" style="color: #006064;">The 2-Step Formula</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="bg-white rounded-lg shadow-md p-8 text-center">
+                        <div class="text-6xl font-black" style="color: #00ACC1;">1</div>
+                        <h3 class="text-2xl font-bold mt-4" style="color: #00838F;">Start with a Polite Opener</h3>
+                        <p class="mt-2">Always begin your question with a soft introductory phrase.</p>
+                    </div>
+                    <div class="bg-white rounded-lg shadow-md p-8 text-center">
+                        <div class="text-6xl font-black" style="color: #00ACC1;">2</div>
+                        <h3 class="text-2xl font-bold mt-4" style="color: #00838F;">Use Statement Word Order</h3>
+                        <p class="mt-2">The rest of your sentence must follow the structure of a normal statement (Subject + Verb), not a question.</p>
+                    </div>
                 </div>
-                <div id="recommendation-output" class="mt-6 bg-gray-50 p-6 rounded-lg min-h-[100px]">
-                    <p class="text-gray-500">Your recommendation will appear here.</p>
-                </div>
-            </div>
-        </section>
+            </section>
 
-        <section id="lesson-planner" class="scroll-mt-20">
-            <h3 class="text-3xl font-bold mb-2 text-center">Lesson Planner</h3>
-            <p class="text-md text-gray-600 max-w-2xl mx-auto text-center mb-8">For teachers and planners, here is the original 9-lesson structure for this unit. Each lesson is designed for a 40-minute segment. Click on any lesson to expand its details, including objectives, materials, and a breakdown of activities.</p>
-
-            <div id="accordion-container" class="space-y-4"></div>
-        </section>
-    </main>
-<script>
-const AppData = {
-    quiz: [
-        {
-            question: 'In music, an "earworm" is a song:',
-            options: { a: "with memorable lyrics.", b: "that repeats itself in your head.", c: "with a fast tempo." },
-            answer: 'b'
-        },
-        {
-            question: 'The maximum number of tracks a music app can have is:',
-            options: { a: "30 million.", b: "13 million.", c: "3 million." },
-            answer: 'a'
-        },
-        {
-            question: 'Music influences our circadian rhythm, which is:',
-            options: { a: "how we move.", b: "how we feel.", c: "the times when we sleep and eat." },
-            answer: 'c'
-        },
-        {
-            question: 'Shopping malls and stores use background music to:',
-            options: { a: "entertain us.", b: "make us stay longer.", c: "encourage us to shop quickly." },
-            answer: 'b'
-        },
-        {
-            question: 'Research suggests that we associate notes with a higher pitch with:',
-            options: { a: "bitter flavors.", b: "salty flavors.", c: "sweet flavors." },
-            answer: 'c'
-        },
-        {
-            question: 'The genres and melodies we like throughout our life are usually from:',
-            options: { a: "our childhood.", b: "our teenage years.", c: "our adult years." },
-            answer: 'b'
-        },
-    ],
-    reading: {
-        "Golden Record": {
-            title: "The Golden Record",
-            content: "Launched on the Voyager 1 probe in 1977, the Golden Record was a message to potential extraterrestrial life, containing sounds, images, and music from Earth. It included everything from Beethoven to 1950s rock, demonstrating music's central role in human civilization."
-        },
-        "Greek Society": {
-            title: "Music in Ancient Greece",
-            content: "For the ancient Greeks, music was divine and linked to creativity and inspiration from the Muses. They believed music had the power to cure disease, boost athletic performance, and help people work, showing its deep integration into society."
-        },
-        "Pattern Recognition": {
-            title: "Why We Love Music's Patterns",
-            content: "One theory is that we enjoy music because our brains are evolved to recognize patterns, a skill crucial for survival (e.g., smelling smoke means fire). Music's predictable patterns of harmony, pitch, and rhythm give us pleasure, even though it's not a survival need."
-        },
-        "Music & Emotion": {
-            title: "Music as a Language of Emotion",
-            content: "Music is similar to spoken language in how it conveys emotion. Fast tempos and high pitches can make us feel excited or happy, while slow tempos and low pitches can evoke sadness. Our brains are tuned to interpret these sonic cues, reacting to music and speech in similar ways."
-        }
-    },
-    trends: {
-        earbuds: {
-            label: 'Earbud Usage',
-            data: [10, 15, 22, 30],
-            years: ['2015', '2016', '2017', '2018'],
-            sentenceVerb: "The number of people who use earbuds grew steadily since 2015.",
-            sentenceNoun: "There has been a steady growth in the number of people who use earbuds since 2015."
-        },
-        headphones: {
-            label: 'Daily Headphone Usage',
-            data: [30, 32, 35, 40],
-            years: ['2010', '2013', '2016', '2018'],
-            sentenceVerb: "The number of people who use headphones has increased gradually since 2010.",
-            sentenceNoun: "There has been a gradual increase in the number of people who use headphones since 2010."
-        },
-        loudMusic: {
-            label: 'Exposure to Loud Music',
-            data: [34, 42],
-            years: ['2005', '2010'],
-            sentenceVerb: "The number of teens who listen to loud music every day jumped from 34% in 2005 to 42% in 2010.",
-            sentenceNoun: "There was a jump in the number of teens who listen to loud music every day from 34% in 2005 to 42% in 2010."
-        },
-        hearingLoss: {
-            label: 'Teen Hearing Loss',
-            data: [20, 25, 23],
-            years: ['2007', '2008', '2018'],
-            sentenceVerb: "The number of teens with hearing loss fluctuated between 2007 and 2018.",
-            sentenceNoun: "There was a fluctuation in the number of teens with hearing loss between 2007 and 2018."
-        }
-    },
-    soundscapes: {
-        'default': {
-            title: 'Select an Activity',
-            recommendation: 'Your recommendation will appear here.'
-        },
-        'exam': {
-            title: 'Reviewing for an exam',
-            recommendation: 'Try listening to instrumental music with a steady, simple rhythm (like classical or ambient lo-fi) or nature sounds like falling rain. These soundscapes can help mask distracting noises without having lyrics that pull your focus away from your studies.'
-        },
-        'morning': {
-            title: 'Waking up in the morning',
-            recommendation: 'Choose music that is upbeat and energizing, with a tempo that gradually increases. This can help stimulate your brain and body, making it easier to feel alert and ready for the day.'
-        },
-        'travel': {
-            title: 'Traveling to school',
-            recommendation: 'A personal playlist of your favorite songs can be great for setting a positive mood. If you need to be aware of your surroundings, consider instrumental music or listening at a lower volume.'
-        },
-        'cleaning': {
-            title: 'Cleaning your bedroom',
-            recommendation: 'Music with a fast tempo and strong beat is perfect for physical tasks. Pop, rock, or dance music can make chores feel less tedious and help you keep a productive pace.'
-        },
-        'bed': {
-            title: 'Going to bed',
-            recommendation: 'Calm, slow, and soothing soundscapes are best. Think soft ambient music, gentle nature sounds like crickets or waves, or white noise. These sounds have a tempo similar to a resting heart rate and can help you relax and fall asleep.'
-        }
-    },
-    lessons: [
-        {
-            title: "Lesson 1: The Music in Our Lives",
-            objective: "To introduce the topic of music's role in daily life and to assess students' initial knowledge and opinions.",
-            materials: "PDF Page 2, video player for 'Factflix' video.",
-            activities: [
-                { time: 5, desc: "Warm-up & Introduction: Introduce the unit's theme and discuss where/when students listen to music." },
-                { time: 15, desc: "Quiz: In pairs, students complete the quiz on page 2." },
-                { time: 10, desc: "Video & Comprehension: Play 'Factflix' video, students check quiz answers and discuss." },
-                { time: 10, desc: "Pair Discussion: Discuss musical tastes and habits using key phrases." }
-            ]
-        },
-        {
-            title: "Lesson 2: How Music Connects Us (Reading Part 1)",
-            objective: "To develop reading skills by identifying the main topic of paragraphs.",
-            materials: "PDF Pages 3 & 4.",
-            activities: [
-                { time: 5, desc: "Pre-reading Discussion: Discuss the historical importance of music." },
-                { time: 20, desc: "Reading for Gist: Students read 'Where Words Fail, Music Speaks' to understand its general purpose." },
-                { time: 15, desc: "Reading Strategy: Identify the main message of each paragraph using the chart on page 3." }
-            ]
-        },
-        {
-            title: "Lesson 3: How Music Connects Us (Reading Part 2)",
-            objective: "To analyze the reading text in detail and expand vocabulary with abstract nouns.",
-            materials: "PDF Pages 3 & 4.",
-            activities: [
-                { time: 15, desc: "Detailed Comprehension: Answer comprehension questions in pairs." },
-                { time: 15, desc: "Vocabulary (Abstract Nouns): Categorize nouns and discuss their meanings." },
-                { time: 10, desc: "Talking Points: Discuss opinion-based questions in small groups." }
-            ]
-        },
-        {
-            title: "Lesson 4: Trends in Music and Technology",
-            objective: "To introduce vocabulary and grammar for describing trends using verbs and adverbs.",
-            materials: "PDF Page 5.",
-            activities: [
-                { time: 10, desc: "Lead-in & Reading: Discuss technology's impact on music and read the article." },
-                { time: 15, desc: "Grammar Discovery: Analyze example sentences to understand how to describe trends." },
-                { time: 15, desc: "Controlled Practice: Use verbs and adverbs to describe trends shown in charts on page 6." }
-            ]
-        },
-        {
-            title: "Lesson 5: Describing Trends with Nouns",
-            objective: "To practice an alternative structure for describing trends using nouns and adjectives.",
-            materials: "PDF Page 6.",
-            activities: [
-                { time: 10, desc: "Grammar Introduction: Study examples of using nouns to describe trends." },
-                { time: 20, desc: "Sentence Transformation: Rewrite sentences, changing verb/adverb structure to noun/adjective." },
-                { time: 10, desc: "Discussion: Discuss future trends in music and technology." }
-            ]
-        },
-        {
-            title: "Lesson 6: How Sound Affects Us",
-            objective: "To explore the impact of different sounds on mood and focus.",
-            materials: "PDF Page 7, audio player.",
-            activities: [
-                { time: 10, desc: "Life Skills Strategy: Introduce the 'Finding how you focus' strategy." },
-                { time: 15, desc: "Listening & Describing: Listen to sound extracts and describe them using adjectives." },
-                { time: 15, desc: "Personalization & Further Listening: Discuss personal reactions and listen to a talk about soundscapes for main ideas." }
-            ]
-        },
-        {
-            title: "Lesson 7: Soundscapes and Focus",
-            objective: "To understand and apply the concept of soundscapes to daily activities.",
-            materials: "PDF Pages 7 & 8, audio player.",
-            activities: [
-                { time: 15, desc: "Listening for Detail: Listen to the talk again to answer specific questions." },
-                { time: 15, desc: "Application of Life Skill: Discuss suitable soundscapes for different daily activities." },
-                { time: 10, desc: "Reflection: Reflect on changes to personal daily soundscapes." }
-            ]
-        },
-        {
-            title: "Lesson 8: Making Recommendations",
-            objective: "To develop speaking skills for making and justifying recommendations.",
-            materials: "PDF Page 8.",
-            activities: [
-                { time: 10, desc: "Speaking Strategy: Introduce strategy and key phrases for making recommendations." },
-                { time: 15, desc: "Group Brainstorm: Discuss various places and behaviors to encourage with music." },
-                { time: 15, desc: "Group Work: Design playlists for three places and prepare to present recommendations." }
-            ]
-        },
-        {
-            title: "Lesson 9: Unit Review and Persuasive Writing",
-            objective: "To review key concepts and introduce persuasive writing.",
-            materials: "PDF Page 1.",
-            activities: [
-                { time: 15, desc: "Unit Review: Whole-class review of the unit's main concepts." },
-                { time: 5, desc: "Introduction to Writing Skill: Introduce the concept of 'writing persuasively'." },
-                { time: 15, desc: "Brainstorming: Brainstorm persuasive writing topics related to the unit." },
-                { time: 5, desc: "Wrap-up: Conclude the unit and set up the next writing task." }
-            ]
-        },
-    ]
-};
-
-document.addEventListener('DOMContentLoaded', () => {
-    
-    function initQuiz() {
-        const quizContainer = document.getElementById('quiz-questions');
-        if (!quizContainer) return;
-        
-        quizContainer.innerHTML = AppData.quiz.map((q, index) => `
-            <div class="quiz-question-container" id="q-container-${index}">
-                <p class="font-medium mb-2">${index + 1}. ${q.question}</p>
-                <div class="space-y-2">
-                    ${Object.entries(q.options).map(([key, value]) => `
-                        <div>
-                            <input type="radio" id="q${index}${key}" name="q${index}" value="${key}" class="mr-2 accent-[#4A919E]">
-                            <label for="q${index}${key}" class="text-gray-700">${value}</label>
+            <section id="rules">
+                <h2 class="text-3xl font-bold text-center mb-10" style="color: #006064;">The Rules in Action</h2>
+                <div class="space-y-8">
+                    <div class="bg-white rounded-lg shadow-md p-8">
+                        <h3 class="text-2xl font-bold mb-4" style="color: #00838F;">Rule A: For "Wh-" Questions</h3>
+                        <p class="mb-6">For questions starting with who, what, where, when, why, or how, the verb moves to the end of the sentence, after the subject.</p>
+                        <div class="p-4 bg-gray-50 rounded-lg">
+                            <p class="font-bold">Direct: <span class="p-1 rounded" style="background-color: #B2EBF2;">Where</span> <span class="p-1 rounded bg-red-200">is</span> <span class="p-1 rounded bg-green-200">the library</span>?</p>
+                            <div class="text-2xl my-2 text-center" style="color: #00ACC1;">↓</div>
+                            <p class="font-bold">Indirect: Could you tell me <span class="p-1 rounded" style="background-color: #B2EBF2;">where</span> <span class="p-1 rounded bg-green-200">the library</span> <span class="p-1 rounded bg-red-200">is</span>?</p>
                         </div>
-                    `).join('')}
+                         <div class="p-4 bg-gray-50 rounded-lg mt-4">
+                            <p class="font-bold">Direct: What time <span class="p-1 rounded bg-red-200">does</span> <span class="p-1 rounded bg-green-200">the train</span> <span class="p-1 rounded bg-yellow-200">leave</span>?</p>
+                            <div class="text-2xl my-2 text-center" style="color: #00ACC1;">↓</div>
+                            <p class="font-bold">Indirect: Do you know what time <span class="p-1 rounded bg-green-200">the train</span> <span class="p-1 rounded bg-yellow-200">leaves</span>?</p>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-lg shadow-md p-8">
+                        <h3 class="text-2xl font-bold mb-4" style="color: #00838F;">Rule B: For "Yes/No" Questions</h3>
+                        <p class="mb-6">For questions that can be answered with yes or no, add "if" or "whether" and change the word order to a normal statement. Remove helping verbs like `do`, `does`, or `did`.</p>
+                        <div class="p-4 bg-gray-50 rounded-lg">
+                            <p class="font-bold">Direct: <span class="p-1 rounded bg-red-200">Do</span> <span class="p-1 rounded bg-green-200">you</span> <span class="p-1 rounded bg-yellow-200">sell</span> vintage phones?</p>
+                            <div class="text-2xl my-2 text-center" style="color: #00ACC1;">↓</div>
+                            <p class="font-bold">Indirect: Could you tell me <span class="p-1 rounded" style="background-color: #B2EBF2;">if</span> <span class="p-1 rounded bg-green-200">you</span> <span class="p-1 rounded bg-yellow-200">sell</span> vintage phones?</p>
+                        </div>
+                         <div class="p-4 bg-gray-50 rounded-lg mt-4">
+                            <p class="font-bold">Direct: <span class="p-1 rounded bg-red-200">Did</span> <span class="p-1 rounded bg-green-200">they</span> <span class="p-1 rounded bg-yellow-200">receive</span> the email?</p>
+                            <div class="text-2xl my-2 text-center" style="color: #00ACC1;">↓</div>
+                            <p class="font-bold">Indirect: Do you know <span class="p-1 rounded" style="background-color: #B2EBF2;">if</span> <span class="p-1 rounded bg-green-200">they</span> <span class="p-1 rounded bg-yellow-200">received</span> the email?</p>
+                        </div>
+                    </div>
                 </div>
-                 <p class="text-sm mt-2 font-semibold hidden" id="feedback-${index}"></p>
-            </div>
-        `).join('');
+            </section>
 
-        const quizForm = document.getElementById('music-quiz');
-        quizForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            AppData.quiz.forEach((q, index) => {
-                const selected = document.querySelector(`input[name="q${index}"]:checked`);
-                const feedbackEl = document.getElementById(`feedback-${index}`);
-                const qContainer = document.getElementById(`q-container-${index}`);
-                
-                feedbackEl.classList.remove('hidden', 'text-green-600', 'text-red-600');
-                
-                if (selected) {
-                    if (selected.value === q.answer) {
-                        feedbackEl.textContent = 'Correct!';
-                        feedbackEl.classList.add('text-green-600');
-                    } else {
-                        feedbackEl.textContent = `Incorrect. The correct answer is: ${q.options[q.answer]}`;
-                        feedbackEl.classList.add('text-red-600');
-                    }
-                } else {
-                    feedbackEl.textContent = 'You did not answer this question.';
-                    feedbackEl.classList.add('text-yellow-600');
-                }
-            });
-        });
-    }
+            <section id="tenses">
+                <h2 class="text-3xl font-bold text-center mb-10" style="color: #006064;">Tense Transformation Chart</h2>
+                <div class="bg-white rounded-lg shadow-md p-8">
+                    <p class="text-center mb-6 max-w-2xl mx-auto">The core rule of using statement word order applies to all tenses. Click the buttons below to see how direct questions change into indirect questions in different tenses.</p>
+                    <div id="tense-buttons" class="flex flex-wrap justify-center gap-2 md:gap-4 mb-6">
+                        <button class="tense-btn bg-gray-200 hover:bg-gray-300 font-bold py-2 px-4 rounded-full transition" data-tense="present-simple">Present Simple</button>
+                        <button class="tense-btn bg-gray-200 hover:bg-gray-300 font-bold py-2 px-4 rounded-full transition" data-tense="past-simple">Past Simple</button>
+                        <button class="tense-btn bg-gray-200 hover:bg-gray-300 font-bold py-2 px-4 rounded-full transition" data-tense="present-continuous">Present Continuous</button>
+                        <button class="tense-btn bg-gray-200 hover:bg-gray-300 font-bold py-2 px-4 rounded-full transition" data-tense="past-continuous">Past Continuous</button>
+                        <button class="tense-btn bg-gray-200 hover:bg-gray-300 font-bold py-2 px-4 rounded-full transition" data-tense="present-perfect">Present Perfect</button>
+                        <button class="tense-btn bg-gray-200 hover:bg-gray-300 font-bold py-2 px-4 rounded-full transition" data-tense="future-will">Future with "will"</button>
+                        <button class="tense-btn bg-gray-200 hover:bg-gray-300 font-bold py-2 px-4 rounded-full transition" data-tense="modal-can">Modal "can"</button>
+                    </div>
+                    <div id="tense-display" class="p-6 bg-gray-50 rounded-lg min-h-[220px]">
+                        <p class="text-center text-gray-500">Select a tense to see the examples.</p>
+                    </div>
+                </div>
+            </section>
 
-    function initReading() {
-        const tabsContainer = document.getElementById('reading-tabs');
-        const contentContainer = document.getElementById('reading-content');
-        if (!tabsContainer || !contentContainer) return;
-
-        const topics = Object.keys(AppData.reading);
-        tabsContainer.innerHTML = topics.map(topic => `
-            <button class="btn btn-secondary reading-tab-btn" data-topic="${topic}">${AppData.reading[topic].title}</button>
-        `).join('');
-
-        const tabButtons = tabsContainer.querySelectorAll('.reading-tab-btn');
-        tabButtons.forEach(btn => {
-            btn.addEventListener('click', () => {
-                tabButtons.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                const topicData = AppData.reading[btn.dataset.topic];
-                contentContainer.innerHTML = `<p>${topicData.content}</p>`;
-            });
-        });
-
-        if (tabButtons.length > 0) {
-            tabButtons[0].click();
-        }
-    }
-
-    let trendsChartInstance = null;
-    function initTrends() {
-        const trendButtonsContainer = document.getElementById('trend-buttons');
-        const descriptionEl = document.getElementById('trend-description');
-        const toggle = document.getElementById('phrase-toggle');
-        const toggleKnob = document.getElementById('toggle-knob');
-        if (!trendButtonsContainer) return;
-
-        const trends = Object.keys(AppData.trends);
-        trendButtonsContainer.innerHTML = trends.map(trend => `
-            <button class="btn btn-secondary trend-btn" data-trend="${trend}">${AppData.trends[trend].label}</button>
-        `).join('');
-
-        const canvas = document.getElementById('trends-chart').getContext('2d');
-        
-        function updateChart(trendKey) {
-            const trendData = AppData.trends[trendKey];
+            <section id="watch">
+                <h2 class="text-3xl font-bold text-center mb-10" style="color: #006064;">Watch It in Action</h2>
+                <div class="bg-white rounded-lg shadow-md p-8">
+                    <p class="text-center mb-6 max-w-2xl mx-auto">In this clip from *Spider-Man: No Way Home*, Peter Parker (a teenager) needs a huge favor from Doctor Strange (a powerful adult). Notice how he uses polite, indirect language to make his difficult request.</p>
+                    <div class="video-container rounded-lg overflow-hidden shadow-lg">
+                        <iframe src="https://www.youtube.com/embed/DOjikQt2zQI" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                </div>
+            </section>
             
-            if (trendsChartInstance) {
-                trendsChartInstance.destroy();
-            }
-
-            trendsChartInstance = new Chart(canvas, {
-                type: 'line',
-                data: {
-                    labels: trendData.years,
-                    datasets: [{
-                        label: trendData.label,
-                        data: trendData.data,
-                        borderColor: '#4A919E',
-                        backgroundColor: 'rgba(74, 145, 158, 0.2)',
-                        borderWidth: 2,
-                        tension: 0.1,
-                        fill: true,
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: { color: '#333333' }
-                        },
-                        x: {
-                           ticks: { color: '#333333' }
-                        }
-                    },
-                    plugins: {
-                        legend: { display: false }
-                    }
-                }
-            });
-
-            updateDescription(trendKey);
-        }
-
-        function updateDescription(trendKey) {
-             const isAlternative = toggle.getAttribute('aria-checked') === 'true';
-             const trendInfo = AppData.trends[trendKey];
-             descriptionEl.textContent = isAlternative ? trendInfo.sentenceNoun : trendInfo.sentenceVerb;
-        }
-
-        const trendButtons = trendButtonsContainer.querySelectorAll('.trend-btn');
-        trendButtons.forEach(btn => {
-            btn.addEventListener('click', () => {
-                trendButtons.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                updateChart(btn.dataset.trend);
-            });
-        });
-
-        toggle.addEventListener('click', () => {
-            const currentState = toggle.getAttribute('aria-checked') === 'true';
-            toggle.setAttribute('aria-checked', !currentState);
-            toggleKnob.classList.toggle('translate-x-5');
-            toggle.classList.toggle('bg-[#4A919E]', !currentState);
-            toggle.classList.toggle('bg-gray-200', currentState);
-
-            const activeTrendBtn = trendButtonsContainer.querySelector('.trend-btn.active');
-            if (activeTrendBtn) {
-                updateDescription(activeTrendBtn.dataset.trend);
-            }
-        });
-
-        if (trendButtons.length > 0) {
-            trendButtons[0].click();
-        }
-    }
-
-    function initSoundscapes() {
-        const selectEl = document.getElementById('activity-select');
-        const outputEl = document.getElementById('recommendation-output');
-        if (!selectEl) return;
-
-        const activities = Object.keys(AppData.soundscapes);
-        selectEl.innerHTML = activities.map(key => `
-            <option value="${key}">${AppData.soundscapes[key].title}</option>
-        `).join('');
-
-        selectEl.addEventListener('change', (e) => {
-            const selectedKey = e.target.value;
-            const data = AppData.soundscapes[selectedKey];
-            outputEl.innerHTML = `<h5 class="font-semibold text-lg mb-2">${data.title}</h5><p>${data.recommendation}</p>`;
-        });
-
-        selectEl.dispatchEvent(new Event('change'));
-    }
-
-    function initAccordion() {
-        const container = document.getElementById('accordion-container');
-        if (!container) return;
-
-        container.innerHTML = AppData.lessons.map((lesson, index) => `
-            <div class="card !p-0">
-                <button class="accordion-header w-full flex justify-between items-center text-left p-4" data-target="${index}">
-                    <span class="text-lg font-semibold">${lesson.title}</span>
-                    <span class="accordion-icon text-2xl font-light transform transition-transform duration-300">+</span>
-                </button>
-                <div class="accordion-content px-4 pb-4" id="accordion-content-${index}">
-                    <p class="font-medium"><strong>Objective:</strong> ${lesson.objective}</p>
-                    <p class="font-medium mt-2"><strong>Materials:</strong> ${lesson.materials}</p>
-                    <table class="w-full text-left mt-4 border-collapse">
-                        <thead>
-                            <tr>
-                                <th class="border-b-2 p-2 w-1/4">Time (mins)</th>
-                                <th class="border-b-2 p-2 w-3/4">Activity</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${lesson.activities.map(act => `
-                                <tr>
-                                    <td class="border-b p-2">${act.time}</td>
-                                    <td class="border-b p-2">${act.desc}</td>
-                                </tr>
-                            `).join('')}
-                        </tbody>
-                    </table>
+            <section id="practice">
+                <h2 class="text-3xl font-bold text-center mb-10" style="color: #006064;">✨ Practice Your Politeness</h2>
+                <div class="bg-white rounded-lg shadow-md p-8">
+                    <p class="text-center mb-6">Test your skills! Get a random scenario and rewrite the direct question to be more polite. Then, get instant feedback from our AI teacher.</p>
+                    <!-- Practice section content here -->
                 </div>
-            </div>
-        `).join('');
+            </section>
 
-        container.addEventListener('click', (e) => {
-            const header = e.target.closest('.accordion-header');
-            if (header) {
-                const targetId = header.dataset.target;
-                const content = document.getElementById(`accordion-content-${targetId}`);
-                const icon = header.querySelector('.accordion-icon');
+        </main>
+    </div>
 
-                const isOpening = content.style.maxHeight === '0px' || !content.style.maxHeight;
-                
-                if (isOpening) {
-                    content.style.maxHeight = content.scrollHeight + 'px';
-                    icon.textContent = '-';
-                    icon.classList.add('rotate-180');
-                } else {
-                    content.style.maxHeight = '0px';
-                    icon.textContent = '+';
-                    icon.classList.remove('rotate-180');
+    <script>
+        const tenseData = {
+            'present-simple': {
+                wh: {
+                    direct: `What time <span class="p-1 rounded bg-red-200">does</span> <span class="p-1 rounded bg-green-200">the meeting</span> <span class="p-1 rounded bg-yellow-200">start</span>?`,
+                    indirect: `Do you know what time <span class="p-1 rounded bg-green-200">the meeting</span> <span class="p-1 rounded bg-yellow-200">starts</span>?`
+                },
+                yn: {
+                    direct: `<span class="p-1 rounded bg-red-200">Do</span> <span class="p-1 rounded bg-green-200">they</span> <span class="p-1 rounded bg-yellow-200">live</span> here?`,
+                    indirect: `I was wondering <span class="p-1 rounded" style="background-color: #B2EBF2;">if</span> <span class="p-1 rounded bg-green-200">they</span> <span class="p-1 rounded bg-yellow-200">live</span> here.`
+                }
+            },
+            'past-simple': {
+                wh: {
+                    direct: `Where <span class="p-1 rounded bg-red-200">did</span> <span class="p-1 rounded bg-green-200">you</span> <span class="p-1 rounded bg-yellow-200">go</span> yesterday?`,
+                    indirect: `Could you tell me where <span class="p-1 rounded bg-green-200">you</span> <span class="p-1 rounded bg-yellow-200">went</span> yesterday?`
+                },
+                 yn: {
+                    direct: `<span class="p-1 rounded bg-red-200">Did</span> <span class="p-1 rounded bg-green-200">she</span> <span class="p-1 rounded bg-yellow-200">call</span>?`,
+                    indirect: `Do you know <span class="p-1 rounded" style="background-color: #B2EBF2;">if</span> <span class="p-1 rounded bg-green-200">she</span> <span class="p-1 rounded bg-yellow-200">called</span>?`
+                }
+            },
+            'present-continuous': {
+                wh: {
+                    direct: `What <span class="p-1 rounded bg-red-200">is</span> <span class="p-1 rounded bg-green-200">she</span> <span class="p-1 rounded bg-yellow-200">working on</span>?`,
+                    indirect: `I was wondering what <span class="p-1 rounded bg-green-200">she</span> <span class="p-1 rounded bg-red-200">is</span> <span class="p-1 rounded bg-yellow-200">working on</span>.`
+                },
+                yn: {
+                    direct: `<span class="p-1 rounded bg-red-200">Are</span> <span class="p-1 rounded bg-green-200">they</span> <span class="p-1 rounded bg-yellow-200">coming</span>?`,
+                    indirect: `Could you tell me <span class="p-1 rounded" style="background-color: #B2EBF2;">if</span> <span class="p-1 rounded bg-green-200">they</span> <span class="p-1 rounded bg-red-200">are</span> <span class="p-1 rounded bg-yellow-200">coming</span>?`
+                }
+            },
+            'past-continuous': {
+                wh: {
+                    direct: `Why <span class="p-1 rounded bg-red-200">was</span> <span class="p-1 rounded bg-green-200">he</span> <span class="p-1 rounded bg-yellow-200">shouting</span>?`,
+                    indirect: `Do you have any idea why <span class="p-1 rounded bg-green-200">he</span> <span class="p-1 rounded bg-red-200">was</span> <span class="p-1 rounded bg-yellow-200">shouting</span>?`
+                },
+                yn: {
+                    direct: `<span class="p-1 rounded bg-red-200">Was</span> <span class="p-1 rounded bg-green-200">it</span> <span class="p-1 rounded bg-yellow-200">raining</span>?`,
+                    indirect: `I'd like to know <span class="p-1 rounded" style="background-color: #B2EBF2;">if</span> <span class="p-1 rounded bg-green-200">it</span> <span class="p-1 rounded bg-red-200">was</span> <span class="p-1 rounded bg-yellow-200">raining</span>.`
+                }
+            },
+            'present-perfect': {
+                wh: {
+                    direct: `How long <span class="p-1 rounded bg-red-200">have</span> <span class="p-1 rounded bg-green-200">you</span> <span class="p-1 rounded bg-yellow-200">worked</span> here?`,
+                    indirect: `Could you tell me how long <span class="p-1 rounded bg-green-200">you</span> <span class="p-1 rounded bg-red-200">have</span> <span class="p-1 rounded bg-yellow-200">worked</span> here?`
+                },
+                yn: {
+                    direct: `<span class="p-1 rounded bg-red-200">Has</span> <span class="p-1 rounded bg-green-200">the package</span> <span class="p-1 rounded bg-yellow-200">arrived</span>?`,
+                    indirect: `Do you know <span class="p-1 rounded" style="background-color: #B2EBF2;">if</span> <span class="p-1 rounded bg-green-200">the package</span> <span class="p-1 rounded bg-red-200">has</span> <span class="p-1 rounded bg-yellow-200">arrived</span>?`
+                }
+            },
+            'future-will': {
+                wh: {
+                    direct: `When <span class="p-1 rounded bg-red-200">will</span> <span class="p-1 rounded bg-green-200">the results</span> <span class="p-1 rounded bg-yellow-200">be</span> announced?`,
+                    indirect: `Do you have any idea when <span class="p-1 rounded bg-green-200">the results</span> <span class="p-1 rounded bg-red-200">will</span> <span class="p-1 rounded bg-yellow-200">be</span> announced?`
+                },
+                yn: {
+                    direct: `<span class="p-1 rounded bg-red-200">Will</span> <span class="p-1 rounded bg-green-200">you</span> <span class="p-1 rounded bg-yellow-200">be</span> there?`,
+                    indirect: `I was wondering <span class="p-1 rounded" style="background-color: #B2EBF2;">if</span> <span class="p-1 rounded bg-green-200">you</span> <span class="p-1 rounded bg-red-200">will</span> <span class="p-1 rounded bg-yellow-200">be</span> there.`
+                }
+            },
+            'modal-can': {
+                wh: {
+                    direct: `Where <span class="p-1 rounded bg-red-200">can</span> <span class="p-1 rounded bg-green-200">I</span> <span class="p-1 rounded bg-yellow-200">buy</span> a ticket?`,
+                    indirect: `Could you tell me where <span class="p-1 rounded bg-green-200">I</span> <span class="p-1 rounded bg-red-200">can</span> <span class="p-1 rounded bg-yellow-200">buy</span> a ticket?`
+                },
+                yn: {
+                    direct: `<span class="p-1 rounded bg-red-200">Can</span> <span class="p-1 rounded bg-green-200">you</span> <span class="p-1 rounded bg-yellow-200">help</span> me?`,
+                    indirect: `I was wondering <span class="p-1 rounded" style="background-color: #B2EBF2;">if</span> <span class="p-1 rounded bg-green-200">you</span> <span class="p-1 rounded bg-red-200">can</span> <span class="p-1 rounded bg-yellow-200">help</span> me.`
                 }
             }
-        });
-    }
-    
-    function initNavigation() {
-        const navLinks = document.querySelectorAll('a.nav-link');
-        const mobileNav = document.getElementById('mobile-nav');
+        };
 
-        function scrollToSection(selector) {
-             const section = document.querySelector(selector);
-             if(section) {
-                section.scrollIntoView({ behavior: 'smooth' });
-             }
-        }
+        document.addEventListener('DOMContentLoaded', () => {
+            const tenseButtonsContainer = document.getElementById('tense-buttons');
+            const tenseDisplay = document.getElementById('tense-display');
 
-        navLinks.forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                scrollToSection(link.getAttribute('href'));
-            });
-        });
+            tenseButtonsContainer.addEventListener('click', (e) => {
+                if (e.target.classList.contains('tense-btn')) {
+                    const tense = e.target.dataset.tense;
+                    const data = tenseData[tense];
 
-        mobileNav.addEventListener('change', (e) => {
-            scrollToSection(e.target.value);
-        });
+                    document.querySelectorAll('.tense-btn').forEach(btn => btn.classList.remove('active'));
+                    e.target.classList.add('active');
 
-        const sections = document.querySelectorAll('main section[id]');
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const id = entry.target.id;
-                    navLinks.forEach(link => {
-                        link.classList.toggle('active', link.getAttribute('href') === `#${id}`);
-                    });
-                    if (mobileNav.value !== `#${id}`) {
-                        mobileNav.value = `#${id}`;
-                    }
+                    tenseDisplay.innerHTML = `
+                        <div class="space-y-4">
+                            <div>
+                                <h4 class="font-bold text-lg mb-2" style="color: #00838F;">"Wh-" Question Example:</h4>
+                                <div class="p-4 rounded-lg bg-gray-100">
+                                    <p class="font-bold">Direct: ${data.wh.direct}</p>
+                                    <div class="text-2xl my-2 text-center" style="color: #00ACC1;">↓</div>
+                                    <p class="font-bold">Indirect: ${data.wh.indirect}</p>
+                                </div>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-lg mb-2" style="color: #00838F;">"Yes/No" Question Example:</h4>
+                                <div class="p-4 rounded-lg bg-gray-100">
+                                    <p class="font-bold">Direct: ${data.yn.direct}</p>
+                                    <div class="text-2xl my-2 text-center" style="color: #00ACC1;">↓</div>
+                                    <p class="font-bold">Indirect: ${data.yn.indirect}</p>
+                                </div>
+                            </div>
+                        </div>
+                    `;
                 }
             });
-        }, { rootMargin: '-20% 0px -70% 0px', threshold: 0.1 });
-
-        sections.forEach(section => observer.observe(section));
-    }
-
-
-    initQuiz();
-    initReading();
-    initTrends();
-    initSoundscapes();
-    initAccordion();
-    initNavigation();
-});
-</script>
+            
+            // ... (rest of the script for nav, AI practice, etc.)
+        });
+    </script>
 </body>
 </html>
